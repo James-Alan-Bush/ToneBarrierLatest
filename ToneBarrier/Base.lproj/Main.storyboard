@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="9it-0F-OTs">
-    <device id="ipad12_9" orientation="landscape" layout="fullscreen" appearance="light"/>
+    <device id="retina6_72" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -12,35 +14,54 @@
             <objects>
                 <viewController id="9it-0F-OTs" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ajU-mF-TYi">
-                        <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.14999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="waveform.path" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-QY-MZd">
-                                <rect key="frame" x="0.0" y="1" width="1366" height="1023"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.14999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-QY-MZd">
+                                <rect key="frame" x="0.0" y="9" width="430" height="940"/>
+                                <color key="backgroundColor" systemColor="systemFillColor"/>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <imageReference key="image" image="waveform.path" catalog="system" symbolScale="large" renderingMode="template"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CxI-Ah-rhD" userLabel="Play Button">
-                                <rect key="frame" x="181" y="458" width="1004" height="128"/>
+                                <rect key="frame" x="-204.66666666666666" y="414.66666666666669" width="839.33333333333337" height="128.00000000000006"/>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="play" catalog="system">
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="pointSize" pointSize="96" weight="ultraLight"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="pointSize" pointSize="96" weight="thin"/>
                                 </buttonConfiguration>
                                 <connections>
                                     <action selector="toggleToneGenerator:" destination="9it-0F-OTs" eventType="touchUpInside" id="XK5-vq-I5C"/>
                                 </connections>
                             </button>
+                            <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="bPx-NW-Wzl" customClass="AVRoutePickerView">
+                                <rect key="frame" x="-141.66666666666666" y="789.33333333333337" width="713.33333333333337" height="108.66666666666663"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="czV-Br-Vf9"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="p0y-QY-MZd" firstAttribute="width" secondItem="ajU-mF-TYi" secondAttribute="width" id="1Ru-ld-mea"/>
+                            <constraint firstItem="p0y-QY-MZd" firstAttribute="height" secondItem="ajU-mF-TYi" secondAttribute="height" id="8V7-pk-cE9"/>
+                            <constraint firstItem="bPx-NW-Wzl" firstAttribute="bottom" secondItem="czV-Br-Vf9" secondAttribute="bottom" id="AFd-6c-YoL"/>
                             <constraint firstItem="CxI-Ah-rhD" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="GFs-d2-wT1"/>
                             <constraint firstItem="CxI-Ah-rhD" firstAttribute="centerY" secondItem="czV-Br-Vf9" secondAttribute="centerY" id="LkY-TV-3FO"/>
+                            <constraint firstItem="p0y-QY-MZd" firstAttribute="centerY" secondItem="czV-Br-Vf9" secondAttribute="centerY" id="aZH-tf-XZh"/>
+                            <constraint firstItem="bPx-NW-Wzl" firstAttribute="width" secondItem="CxI-Ah-rhD" secondAttribute="width" multiplier="0.85" id="eK9-S9-Zjw"/>
+                            <constraint firstItem="bPx-NW-Wzl" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="fFu-kY-2w1"/>
+                            <constraint firstItem="p0y-QY-MZd" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="gt4-GH-CO7"/>
                             <constraint firstItem="CxI-Ah-rhD" firstAttribute="width" secondItem="czV-Br-Vf9" secondAttribute="height" multiplier="1:1" id="pSC-d8-CRf"/>
+                            <constraint firstItem="bPx-NW-Wzl" firstAttribute="height" secondItem="CxI-Ah-rhD" secondAttribute="height" multiplier="0.85" id="sxT-Ey-2bI"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="playButton" destination="CxI-Ah-rhD" id="dEG-a2-sDT"/>
+                        <outlet property="routePickerVIew" destination="bPx-NW-Wzl" id="rwq-YB-MsW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lza-2j-ClS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -51,5 +72,11 @@
     <resources>
         <image name="play" catalog="system" width="117" height="128"/>
         <image name="waveform.path" catalog="system" width="128" height="113"/>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemFillColor">
+            <color red="0.47058823529411764" green="0.47058823529411764" blue="0.50196078431372548" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

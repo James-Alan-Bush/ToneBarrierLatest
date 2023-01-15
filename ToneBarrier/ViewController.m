@@ -11,6 +11,7 @@
 
 @import QuartzCore;
 @import CoreGraphics;
+@import AVKit;
 
 @interface ViewController ()
 {
@@ -19,12 +20,16 @@
     BOOL _wasPlaying;
 }
 
+@property (strong, nonatomic) MPNowPlayingInfoCenter * nowPlayingInfoCenter;
+@property (strong, nonatomic) MPRemoteCommandCenter * remoteCommandCenter;
+
 @property (weak, nonatomic) IBOutlet UIImageView *activationImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *reachabilityImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *thermometerImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *batteryImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *batteryLevelImageView;
 //@property (weak, nonatomic) IBOutlet UIImageView *playButton;
+@property (weak, nonatomic) IBOutlet AVRoutePickerView *routePickerVIew;
 
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIImageView *heartRateImage;
@@ -34,13 +39,61 @@
 @end
 
 @implementation ViewController
-
+{
+    CAGradientLayer * gradient;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.routePickerVIew setActiveTintColor:[UIColor systemBlueColor]];
+    
+    gradient = [CAGradientLayer new];
+    gradient.frame = self.view.frame;
+    [gradient setAllowsEdgeAntialiasing:TRUE];
+    [gradient setColors:@[(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f].CGColor, (id)[UIColor blackColor].CGColor]];
+    [self.view.layer addSublayer:gradient];
+    
+    [self.playButton setImage:[UIImage systemImageNamed:@"stop"] forState:UIControlStateSelected];
+    [self.playButton setImage:[UIImage systemImageNamed:@"play"] forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage systemImageNamed:@"pause"] forState:UIControlStateDisabled];
+
+    NSMutableDictionary<NSString *, id> * nowPlayingInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
+    [nowPlayingInfo setObject:@"ToneBarrier" forKey:MPMediaItemPropertyTitle];
+    [nowPlayingInfo setObject:(NSString *)@"James Alan Bush" forKey:MPMediaItemPropertyArtist];
+    [nowPlayingInfo setObject:(NSString *)@"The Life of a Demoniac" forKey:MPMediaItemPropertyAlbumTitle];
+    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithBoundsSize:CGSizeMake(180.0, 180.0) requestHandler:^ UIImage * _Nonnull (CGSize size) {
+        
+        static UIImage * image;
+        image = [UIImage systemImageNamed:@"waveform.path"
+                          withConfiguration:[[UIImageSymbolConfiguration configurationWithPointSize:size.height weight:UIImageSymbolWeightLight] configurationByApplyingConfiguration:[UIImageSymbolConfiguration configurationWithHierarchicalColor:[UIColor systemBlueColor]]]];
+        
+        return image;
+    }];
+   
+    [nowPlayingInfo setObject:(MPMediaItemArtwork *)artwork forKey:MPMediaItemPropertyArtwork];
+    
+    [_nowPlayingInfoCenter = [MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:(NSDictionary<NSString *,id> * _Nullable)nowPlayingInfo];
+    
+    MPRemoteCommandHandlerStatus (^remote_command_handler)(MPRemoteCommandEvent * _Nonnull) = ^ MPRemoteCommandHandlerStatus (MPRemoteCommandEvent * _Nonnull event) {
+        [self toggleToneGenerator:self->_playButton];
+        return MPRemoteCommandHandlerStatusSuccess;
+    };
+    
+    [[_remoteCommandCenter = [MPRemoteCommandCenter sharedCommandCenter] playCommand] addTargetWithHandler:remote_command_handler];
+    [[_remoteCommandCenter stopCommand] addTargetWithHandler:remote_command_handler];
+    [[_remoteCommandCenter pauseCommand] addTargetWithHandler:remote_command_handler];
+    [[_remoteCommandCenter togglePlayPauseCommand] addTargetWithHandler:remote_command_handler];
+    
+    [[UIApplication sharedApplication]  beginReceivingRemoteControlEvents];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UIDeviceBatteryLevelDidChangeNotification object:self];
     [self addStatusObservers];
     
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    CGRect new_gradient_frame = CGRectMake(0.f, 0.f, size.width, size.height);
+    [gradient setFrame:new_gradient_frame];
 }
 
 typedef NS_ENUM(NSUInteger, HeartRateMonitorStatus) {

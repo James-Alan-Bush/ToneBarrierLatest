@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B93226252973A79A001B6EF7 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226242973A79A001B6EF7 /* AVFAudio.framework */; };
+		B93226272973A7A8001B6EF7 /* AVRouting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226262973A7A8001B6EF7 /* AVRouting.framework */; };
+		B93226292973A7DB001B6EF7 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226282973A7DB001B6EF7 /* AVKit.framework */; };
 		B96C25B12865F0EA00A75975 /* ClicklessTones.m in Sources */ = {isa = PBXBuildFile; fileRef = B96C25AF2865F0EA00A75975 /* ClicklessTones.m */; };
 		B96C25B42865F1A400A75975 /* easing.c in Sources */ = {isa = PBXBuildFile; fileRef = B96C25B22865F1A400A75975 /* easing.c */; };
 		B9869C5C28672EE8004C4E18 /* ToneBarrierPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5B28672EE8004C4E18 /* ToneBarrierPlayer.m */; };
@@ -22,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B93226232973A516001B6EF7 /* ToneBarrier.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ToneBarrier.entitlements; sourceTree = "<group>"; };
+		B93226242973A79A001B6EF7 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = System/Library/Frameworks/AVFAudio.framework; sourceTree = SDKROOT; };
+		B93226262973A7A8001B6EF7 /* AVRouting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVRouting.framework; path = System/Library/Frameworks/AVRouting.framework; sourceTree = SDKROOT; };
+		B93226282973A7DB001B6EF7 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		B96C25AF2865F0EA00A75975 /* ClicklessTones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClicklessTones.m; sourceTree = "<group>"; };
 		B96C25B02865F0EA00A75975 /* ClicklessTones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClicklessTones.h; sourceTree = "<group>"; };
 		B96C25B22865F1A400A75975 /* easing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = easing.c; sourceTree = "<group>"; };
@@ -41,7 +48,7 @@
 		B99077E1285AD0AF004F494E /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		B99077E2285AD0AF004F494E /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		B99077E4285AD0AF004F494E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; wrapsLines = 0; };
-		B99077E5285AD0AF004F494E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		B99077E5285AD0AF004F494E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		B99077E8285AD0AF004F494E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B99077ED285AD0B0004F494E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B99077EF285AD0B0004F494E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -53,6 +60,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B93226272973A7A8001B6EF7 /* AVRouting.framework in Frameworks */,
+				B93226252973A79A001B6EF7 /* AVFAudio.framework in Frameworks */,
+				B93226292973A7DB001B6EF7 /* AVKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +72,9 @@
 		B9869C6328673755004C4E18 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B93226282973A7DB001B6EF7 /* AVKit.framework */,
+				B93226262973A7A8001B6EF7 /* AVRouting.framework */,
+				B93226242973A79A001B6EF7 /* AVFAudio.framework */,
 				B9869C6528673755004C4E18 /* AudioToolbox.framework */,
 				B9869C6428673755004C4E18 /* MediaPlayer.framework */,
 			);
@@ -88,6 +101,7 @@
 		B99077DD285AD0AF004F494E /* ToneBarrier */ = {
 			isa = PBXGroup;
 			children = (
+				B93226232973A516001B6EF7 /* ToneBarrier.entitlements */,
 				B9869C61286733DA004C4E18 /* Frequencies.h */,
 				B9869C60286733DA004C4E18 /* Frequencies.m */,
 				B9869C5E28672FAC004C4E18 /* ToneGenerator.h */,
@@ -332,6 +346,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = N9987K9442;
@@ -363,6 +378,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = N9987K9442;

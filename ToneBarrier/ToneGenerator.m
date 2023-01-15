@@ -69,6 +69,112 @@ static ToneGenerator *sharedGenerator = NULL;
     return sharedGenerator;
 }
 
+typedef typeof(void(^(^)(NSNotification *, void(^)(NSNotification *)))(void)) notification_observer;
+typedef typeof(void(^)(void)) notification;
+void(^(^(^notification_observation)(NSNotificationCenter *, NSOperationQueue *))(NSNotification *, void(^)(NSNotification *)))(void)  = ^ (NSNotificationCenter * notification_center, NSOperationQueue * operation_queue) {
+    return ^ (NSNotification * observed_notification, typeof(void(^)(NSNotification *))notification_handler) {
+        return ^{
+            [notification_center addObserverForName:observed_notification.name object:observed_notification.object queue:operation_queue usingBlock:notification_handler];
+        };
+    };
+};
+static void (^observe_notifications)(NSArray<notification> *) = ^ (NSArray<notification> * notifications) {
+    for (notification observed_notification in notifications) observed_notification();
+};
+
+// To-Do: Create am NSNotificationObserver block type that observes notifications when passed an object to observe
+//        It should return another block that, when executed, removes the notification observer
+
+static void (^setup_audio_session)(void) = ^{
+    static AVAudioSession * session;
+    session = [AVAudioSession sharedInstance];
+    
+    @try {
+        __autoreleasing NSError *error = nil;
+        [session setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault options:AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
+        [session setSupportsMultichannelContent:TRUE  error:&error];
+        [session setPreferredInputNumberOfChannels:2  error:&error];
+        [session setPreferredOutputNumberOfChannels:2 error:&error];
+        [session setPrefersNoInterruptionsFromSystemAlerts:TRUE error:&error]; // TO-DO: Make this a user-specified preference
+        
+        !(!error) ?: ^ (NSError ** error_t) {
+            printf("Error configuring audio session:\n\t%s\n", [[*error_t debugDescription] UTF8String]);
+            NSException* exception = [NSException
+                                      exceptionWithName:(*error_t).domain
+                                      reason:(*error_t).localizedDescription
+                                      userInfo:@{@"Error Code" : @((*error_t).code)}];
+            @throw exception;
+        }(&error);
+    } @catch (NSException *exception) {
+        printf("Exception configuring audio session:\n\t%s\n\t%s\n\t%lu",
+               [exception.name UTF8String],
+               [exception.reason UTF8String],
+               ((NSNumber *)[exception.userInfo valueForKey:@"Error Code"]).unsignedIntegerValue);
+    } @finally {
+        // Setup notifications
+        
+        notification_observer audio_session_notification_observer = notification_observation([NSNotificationCenter defaultCenter], [NSOperationQueue mainQueue]);
+        
+        notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:session], ^(NSNotification * notification) {
+            UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
+            NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
+//            static BOOL _isSessionInterrupted;
+            switch (theInterruptionType) {
+                case AVAudioSessionInterruptionTypeBegan: {
+                    //                _isSessionInterrupted = [_engine isRunning];
+                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+                    break;
+                }
+                    
+                case AVAudioSessionInterruptionTypeEnded: {
+                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+                    //                _isSessionInterrupted = FALSE;
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+        });
+        
+        notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:session], ^(NSNotification * notification) {
+            UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
+            AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
+            
+            NSLog(@"Route change:");
+            switch (reasonValue) {
+                case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+                    NSLog(@"     NewDeviceAvailable");
+                    break;
+                case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+                    NSLog(@"     OldDeviceUnavailable");
+                    break;
+                case AVAudioSessionRouteChangeReasonCategoryChange:
+                    NSLog(@"     CategoryChange");
+                    NSLog(@"     New Category: %@", [[AVAudioSession sharedInstance] category]);
+                    break;
+                case AVAudioSessionRouteChangeReasonOverride:
+                    NSLog(@"     Override");
+                    break;
+                case AVAudioSessionRouteChangeReasonWakeFromSleep:
+                    NSLog(@"     WakeFromSleep");
+                    break;
+                case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+                    NSLog(@"     NoSuitableRouteForCategory");
+                    break;
+                default:
+                    NSLog(@"     ReasonUnknown");
+            }
+            
+            NSLog(@"Previous route:\n");
+            NSLog(@"%@", routeDescription);
+        });
+
+        observe_notifications(@[observe_audio_session_interruption_notification, observe_audio_route_change_notification]);
+        
+    }
+};
+
 - (instancetype)init
 {
     self = [super init];
@@ -111,9 +217,9 @@ static ToneGenerator *sharedGenerator = NULL;
         
         __autoreleasing NSError *error = nil;
                 [_audioEngine startAndReturnError:&error];
-        
+        setup_audio_session();
         [[AVAudioSession sharedInstance] setActive:YES error:&error];
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+//        [audio_session():nil];
     }
     
     return self;
@@ -230,25 +336,13 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
 
         if (self->_playerOneNode)
         {
-            //        [self createAudioBufferWithCompletionBlock:^(AVAudioPCMBuffer *buffer1, AVAudioPCMBuffer *buffer2, PlayToneCompletionBlock playToneCompletionBlock) {
-            //            [self->_playerOneNode scheduleBuffer:buffer1 atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack completionHandler:^(AVAudioPlayerNodeCompletionCallbackType callbackType) {
-            //                //                if (callbackType == AVAudioPlayerNodeCompletionDataPlayedBack)
-            //                //                    NSLog(@"Calling playToneCompletionBlock 1...");
-            //            }];
-            //            [self->_playerTwoNode scheduleBuffer:buffer2 atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack completionHandler:^(AVAudioPlayerNodeCompletionCallbackType callbackType) {
-            //                if (callbackType == AVAudioPlayerNodeCompletionDataPlayedBack)
-            //                    playToneCompletionBlock();
-            //                //                NSLog(@"Calling playToneCompletionBlock 2...");
-            //            }];
-            //        }];
-            //            ToneBarrierPlayer *player = [[ToneBarrierPlayer alloc] init];
             ClicklessTones *tones = [[ClicklessTones alloc] init];
             [ToneBarrierPlayer.context setPlayer:(id<ToneBarrierPlayerDelegate> _Nonnull)tones];
             [ToneBarrierPlayer.context createAudioBufferWithFormat:[self->_mixerNode outputFormatForBus:0] completionBlock:^(AVAudioPCMBuffer * _Nonnull buffer1, AVAudioPCMBuffer * _Nonnull buffer2, PlayToneCompletionBlock playToneCompletionBlock) {
-
+                
                 [self->_playerOneNode scheduleBuffer:buffer1 atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack completionHandler:^(AVAudioPlayerNodeCompletionCallbackType callbackType) {
-//                    if (callbackType == AVAudioPlayerNodeCompletionDataPlayedBack)
-//                        playToneCompletionBlock();
+                    //                    if (callbackType == AVAudioPlayerNodeCompletionDataPlayedBack)
+                    //                        playToneCompletionBlock();
                 }];
                 
                 [self->_playerTwoNode scheduleBuffer:buffer2 atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack completionHandler:^(AVAudioPlayerNodeCompletionCallbackType callbackType) {
@@ -549,7 +643,7 @@ typedef void (^DataRenderedCompletionBlock)(NSArray<Frequencies *> * frequencyPa
 
 //- (void)start
 //{
-//    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+//    [audio_session() setActive:YES error:nil];
 //
 //    if (self.audioEngine.isRunning == NO)
 //    {
