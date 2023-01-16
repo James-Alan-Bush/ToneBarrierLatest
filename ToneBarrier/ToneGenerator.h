@@ -58,8 +58,8 @@ typedef void (^CreateAudioBufferCompletionBlock)(AVAudioPCMBuffer * _Nonnull buf
 
 
 
-- (void)start;
-- (void)stop;
+- (BOOL)start;
+- (BOOL)stop;
 - (void)alarm;
 
 @end

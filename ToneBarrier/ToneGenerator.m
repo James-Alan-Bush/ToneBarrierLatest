@@ -82,20 +82,20 @@ static void (^observe_notifications)(NSArray<notification> *) = ^ (NSArray<notif
     for (notification observed_notification in notifications) observed_notification();
 };
 
-// To-Do: Create am NSNotificationObserver block type that observes notifications when passed an object to observe
+// To-Do: Create an NSNotificationObserver block type that observes notifications when passed an object to observe
 //        It should return another block that, when executed, removes the notification observer
 
 static void (^setup_audio_session)(void) = ^{
-    static AVAudioSession * session;
-    session = [AVAudioSession sharedInstance];
+//    static AVAudioSession * session;
+//    session = [AVAudioSession sharedInstance];
     
     @try {
         __autoreleasing NSError *error = nil;
-        [session setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault options:AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
-        [session setSupportsMultichannelContent:TRUE  error:&error];
-        [session setPreferredInputNumberOfChannels:2  error:&error];
-        [session setPreferredOutputNumberOfChannels:2 error:&error];
-        [session setPrefersNoInterruptionsFromSystemAlerts:TRUE error:&error]; // TO-DO: Make this a user-specified preference
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault options:AVAudioSessionCategoryOptionAllowAirPlay | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
+        [[AVAudioSession sharedInstance] setSupportsMultichannelContent:TRUE  error:&error];
+        [[AVAudioSession sharedInstance] setPreferredInputNumberOfChannels:2  error:&error];
+        [[AVAudioSession sharedInstance] setPreferredOutputNumberOfChannels:2 error:&error];
+        [[AVAudioSession sharedInstance] setPrefersNoInterruptionsFromSystemAlerts:TRUE error:&error]; // TO-DO: Make this a user-specified preference
         
         !(!error) ?: ^ (NSError ** error_t) {
             printf("Error configuring audio session:\n\t%s\n", [[*error_t debugDescription] UTF8String]);
@@ -115,7 +115,7 @@ static void (^setup_audio_session)(void) = ^{
         
         notification_observer audio_session_notification_observer = notification_observation([NSNotificationCenter defaultCenter], [NSOperationQueue mainQueue]);
         
-        notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:session], ^(NSNotification * notification) {
+        notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
             UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
             NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
 //            static BOOL _isSessionInterrupted;
@@ -137,7 +137,7 @@ static void (^setup_audio_session)(void) = ^{
             }
         });
         
-        notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:session], ^(NSNotification * notification) {
+        notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
             UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
             AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
             
@@ -210,16 +210,14 @@ static void (^setup_audio_session)(void) = ^{
         [_audioEngine attachNode:_playerTwoNode];
         [_audioEngine connect:_playerTwoNode to:_submixer format:[_playerTwoNode outputFormatForBus:0]];
         
-        [_audioEngine connect:_submixer to:_reverb format:[_playerOneNode outputFormatForBus:0]];
-        [_audioEngine connect:_reverb to:_mixerNode format:[_playerOneNode outputFormatForBus:0]];
+        [_audioEngine connect:_submixer to:_reverb format:[_mixerNode outputFormatForBus:0]];
+        [_audioEngine connect:_reverb to:_mixerNode format:[_mixerNode outputFormatForBus:0]];
         
         
+//        __autoreleasing NSError *error = nil;
+//        [_audioEngine startAndReturnError:&error];
         
-        __autoreleasing NSError *error = nil;
-                [_audioEngine startAndReturnError:&error];
-        setup_audio_session();
-        [[AVAudioSession sharedInstance] setActive:YES error:&error];
-//        [audio_session():nil];
+//        [[AVAudioSession sharedInstance] setActive:YES error:&error];
     }
     
     return self;
@@ -317,21 +315,22 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
     return tones;
 };
 
-- (void)start
+- (BOOL)start
 {
-    [[AVAudioSession sharedInstance] setActive:YES error:nil];
-
     if (self.audioEngine.isRunning == NO)
     {
         NSError *error = nil;
         [_audioEngine startAndReturnError:&error];
         NSLog(@"error: %@", error);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:nil userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:_audioEngine userInfo:nil];
 
         if (![self->_playerOneNode isPlaying] || ![self->_playerTwoNode isPlaying])
         {
             [self->_playerOneNode play];
             [self->_playerTwoNode play];
+            NSError *error = nil;
+            [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
+            NSLog(@"error: %@", error);
         }
 
         if (self->_playerOneNode)
@@ -339,7 +338,6 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
             ClicklessTones *tones = [[ClicklessTones alloc] init];
             [ToneBarrierPlayer.context setPlayer:(id<ToneBarrierPlayerDelegate> _Nonnull)tones];
             [ToneBarrierPlayer.context createAudioBufferWithFormat:[self->_mixerNode outputFormatForBus:0] completionBlock:^(AVAudioPCMBuffer * _Nonnull buffer1, AVAudioPCMBuffer * _Nonnull buffer2, PlayToneCompletionBlock playToneCompletionBlock) {
-                
                 [self->_playerOneNode scheduleBuffer:buffer1 atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack completionHandler:^(AVAudioPlayerNodeCompletionCallbackType callbackType) {
                     //                    if (callbackType == AVAudioPlayerNodeCompletionDataPlayedBack)
                     //                        playToneCompletionBlock();
@@ -354,6 +352,7 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
             }];
         }
     }
+    return _audioEngine.isRunning;
 }
 
 NSArray<Frequencies *> * (^pairFrequencies)(NSArray<Frequencies *> *, AVAudioTime *) = ^NSArray<Frequencies *> * (NSArray<Frequencies *> * frequenciesPair, AVAudioTime *time)
@@ -949,7 +948,7 @@ typedef void (^DataRenderedCompletionBlock)(NSArray<Frequencies *> * frequencyPa
 //    }
 //}
 
-- (void)stop
+- (BOOL)stop
 {
     //    dispatch_source_cancel(self->_timer);
     //    self->_timer = nil;
@@ -961,7 +960,9 @@ typedef void (^DataRenderedCompletionBlock)(NSArray<Frequencies *> * frequencyPa
     //        [self.playerTwoNode reset];
     
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:self.audioEngine userInfo:nil];
+    
+    return self.audioEngine.isRunning;
     //    });
 }
 

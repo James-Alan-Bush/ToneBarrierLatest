@@ -46,6 +46,7 @@
     [super viewDidLoad];
     
     [self.routePickerVIew setActiveTintColor:[UIColor systemBlueColor]];
+    [self.routePickerVIew setDelegate:(id<AVRoutePickerViewDelegate> _Nullable)self];
     
     gradient = [CAGradientLayer new];
     gradient.frame = self.view.frame;
@@ -53,23 +54,20 @@
     [gradient setColors:@[(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f].CGColor, (id)[UIColor blackColor].CGColor]];
     [self.view.layer addSublayer:gradient];
     
-    [self.playButton setImage:[UIImage systemImageNamed:@"stop"] forState:UIControlStateSelected];
-    [self.playButton setImage:[UIImage systemImageNamed:@"play"] forState:UIControlStateNormal];
-    [self.playButton setImage:[UIImage systemImageNamed:@"pause"] forState:UIControlStateDisabled];
-
+    [self.playButton setImage:[UIImage systemImageNamed:@"stop"]  forState:UIControlStateSelected];
+    [self.playButton setImage:[UIImage systemImageNamed:@"play"]  forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage systemImageNamed:@"play.slash"] forState:UIControlStateDisabled];
+    
     NSMutableDictionary<NSString *, id> * nowPlayingInfo = [[NSMutableDictionary alloc] initWithCapacity:4];
     [nowPlayingInfo setObject:@"ToneBarrier" forKey:MPMediaItemPropertyTitle];
     [nowPlayingInfo setObject:(NSString *)@"James Alan Bush" forKey:MPMediaItemPropertyArtist];
     [nowPlayingInfo setObject:(NSString *)@"The Life of a Demoniac" forKey:MPMediaItemPropertyAlbumTitle];
     MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithBoundsSize:CGSizeMake(180.0, 180.0) requestHandler:^ UIImage * _Nonnull (CGSize size) {
-        
         static UIImage * image;
         image = [UIImage systemImageNamed:@"waveform.path"
                           withConfiguration:[[UIImageSymbolConfiguration configurationWithPointSize:size.height weight:UIImageSymbolWeightLight] configurationByApplyingConfiguration:[UIImageSymbolConfiguration configurationWithHierarchicalColor:[UIColor systemBlueColor]]]];
-        
         return image;
     }];
-   
     [nowPlayingInfo setObject:(MPMediaItemArtwork *)artwork forKey:MPMediaItemPropertyArtwork];
     
     [_nowPlayingInfoCenter = [MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:(NSDictionary<NSString *,id> * _Nullable)nowPlayingInfo];
@@ -84,7 +82,7 @@
     [[_remoteCommandCenter pauseCommand] addTargetWithHandler:remote_command_handler];
     [[_remoteCommandCenter togglePlayPauseCommand] addTargetWithHandler:remote_command_handler];
     
-    [[UIApplication sharedApplication]  beginReceivingRemoteControlEvents];
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UIDeviceBatteryLevelDidChangeNotification object:self];
     [self addStatusObservers];
@@ -92,8 +90,10 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [CATransaction begin];
     CGRect new_gradient_frame = CGRectMake(0.f, 0.f, size.width, size.height);
     [gradient setFrame:new_gradient_frame];
+    [CATransaction commit];
 }
 
 typedef NS_ENUM(NSUInteger, HeartRateMonitorStatus) {
@@ -318,13 +318,17 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
 - (IBAction)toggleToneGenerator:(UIButton *)sender
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (![ToneGenerator.sharedGenerator.audioEngine isRunning]) {
-            [ToneGenerator.sharedGenerator start];
-        } else if ([ToneGenerator.sharedGenerator.audioEngine isRunning]) {
-            [ToneGenerator.sharedGenerator stop];
-        }
+        [sender setSelected:((![ToneGenerator.sharedGenerator.audioEngine isRunning]) && [ToneGenerator.sharedGenerator start]) || ^ BOOL { [ToneGenerator.sharedGenerator stop]; return [ToneGenerator.sharedGenerator.audioEngine isRunning]; }()];
     });
-    [self updateDeviceStatus];
+    NSLog(@"%@", [sender description]);
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        if (![ToneGenerator.sharedGenerator.audioEngine isRunning]) {
+//            [ToneGenerator.sharedGenerator start];
+//        } else if ([ToneGenerator.sharedGenerator.audioEngine isRunning]) {
+//            [ToneGenerator.sharedGenerator stop];
+//        }
+//    });
+//    [self updateDeviceStatus];
 }
 
 - (void)togglePlayButton

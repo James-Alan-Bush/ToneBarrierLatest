@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 
 #import "AppDelegate.h"
 #import "ToneGenerator.h"
@@ -20,7 +21,7 @@
 #define min_amplitude 0.5f
 #define max_amplitude 1.0f
 
-@interface ViewController : UIViewController <DeviceStatusInterfaceDelegate, ToneWaveRendererDelegate, UIGestureRecognizerDelegate>
+@interface ViewController : UIViewController <AVRoutePickerViewDelegate, DeviceStatusInterfaceDelegate, ToneWaveRendererDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) UIDevice * _Nullable device;
 
