@@ -63,20 +63,21 @@ double (^fade)(Fade, double, double) = ^double(Fade fadeType, double x, double f
     return fade_effect;
 };
 
-- (float)generateRandomNumberBetweenMin:(int)min Max:(int)max
-{
-    return ( (arc4random() % (max-min+1)) + min );
+static __inline__ CGFloat RandomFloatBetween(CGFloat a, CGFloat b) {
+    return a + (b - a) * ((CGFloat) random() / (CGFloat) RAND_MAX);
 }
+
+//- (float)generateRandomNumberBetweenMin:(int)min Max:(int)max
+//{
+//    return ( (arc4random() % (max-min+1)) + min );
+//}
 
 - (void)createAudioBufferWithFormat:(AVAudioFormat *)audioFormat completionBlock:(CreateAudioBufferCompletionBlock)createAudioBufferCompletionBlock
 {
-    
-//    self->frequency[0] = (((double)arc4random() / 0x100000000) * (high_frequency - low_frequency) + low_frequency);
-//    self->frequency[1] = (((double)arc4random() / 0x100000000) * (high_frequency - low_frequency) + low_frequency);
+    static unsigned int fade_bit = 1;
     static AVAudioPCMBuffer * (^createAudioBuffer)(double, double);
-    createAudioBuffer = ^AVAudioPCMBuffer *(double frequencyLeft, double frequencyRight)
-    {
-        AVAudioFrameCount frameCount = audioFormat.sampleRate * (2.0 / [self generateRandomNumberBetweenMin:2 Max:4]);
+    createAudioBuffer = ^AVAudioPCMBuffer * (double frequencyLeft, double frequencyRight) {
+        AVAudioFrameCount frameCount = audioFormat.sampleRate * (2.0 / RandomFloatBetween(2, 4));
         AVAudioPCMBuffer *pcmBuffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFormat frameCapacity:frameCount];
         pcmBuffer.frameLength = frameCount;
         float *left_channel  = pcmBuffer.floatChannelData[0];
@@ -87,8 +88,8 @@ double (^fade)(Fade, double, double) = ^double(Fade fadeType, double x, double f
         {
             double normalized_index = LinearInterpolation(index, frameCount);
             double amplitude = NormalizedSineEaseInOut(normalized_index, amplitude_frequency);
-            left_channel[index]  = fade((self->alternate_channel_flag = (self->alternate_channel_flag == 1) ? 0 : 1), normalized_index, (NormalizedSineEaseInOut(normalized_index, frequencyLeft)  * amplitude));
-            right_channel[index] = fade((self->alternate_channel_flag = (self->alternate_channel_flag == 1) ? 0 : 1), normalized_index, (NormalizedSineEaseInOut(normalized_index, frequencyRight) * amplitude)); // fade((leading_fade == FadeOut) ? FadeIn : leading_fade, normalized_index, (SineEaseInOutFrequency(normalized_index, frequencyRight) * NormalizedSineEaseInOutAmplitude((1.0 - normalized_index), 1)));
+            left_channel[index]  = fade((fade_bit ^= 1), normalized_index, NormalizedSineEaseInOut(normalized_index, frequencyLeft)  * amplitude);
+            right_channel[index] = fade((fade_bit ^= 1), normalized_index, NormalizedSineEaseInOut(normalized_index, frequencyRight) * amplitude); // fade((leading_fade == FadeOut) ? FadeIn : leading_fade, normalized_index, (SineEaseInOutFrequency(normalized_index, frequencyRight) * NormalizedSineEaseInOutAmplitude((1.0 - normalized_index), 1)));
         }
         
         return pcmBuffer;
@@ -97,7 +98,6 @@ double (^fade)(Fade, double, double) = ^double(Fade fadeType, double x, double f
     static void (^block)(void);
     block = ^{
         createAudioBufferCompletionBlock(createAudioBuffer([self->_distributor nextInt], [self->_distributor nextInt]), createAudioBuffer([self->_distributor nextInt], [self->_distributor nextInt]), ^{
-//            self->alternate_channel_flag = (self->alternate_channel_flag == 1) ? 0 : 1;
             self->duration_bifurcate = [self->_distributor_duration nextInt];
             block();
         });

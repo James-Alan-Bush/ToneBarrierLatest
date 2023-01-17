@@ -15,6 +15,11 @@
 		B9869C5C28672EE8004C4E18 /* ToneBarrierPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5B28672EE8004C4E18 /* ToneBarrierPlayer.m */; };
 		B9869C5F28672FAC004C4E18 /* ToneGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5D28672FAC004C4E18 /* ToneGenerator.m */; };
 		B9869C62286733DA004C4E18 /* Frequencies.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C60286733DA004C4E18 /* Frequencies.m */; };
+		B98823DB297626B700477516 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226242973A79A001B6EF7 /* AVFAudio.framework */; };
+		B98823DC297626B700477516 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226282973A7DB001B6EF7 /* AVKit.framework */; };
+		B98823DD297626B700477516 /* AVRouting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226262973A7A8001B6EF7 /* AVRouting.framework */; };
+		B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DE297626B800477516 /* AVFoundation.framework */; };
+		B98823E1297626B800477516 /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DF297626B800477516 /* BackgroundTasks.framework */; };
 		B98903852973486E00BB3174 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B98903842973486E00BB3174 /* Assets.xcassets */; };
 		B99077E0285AD0AF004F494E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077DF285AD0AF004F494E /* AppDelegate.m */; };
 		B99077E3285AD0AF004F494E /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077E2285AD0AF004F494E /* SceneDelegate.m */; };
@@ -41,6 +46,8 @@
 		B9869C61286733DA004C4E18 /* Frequencies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Frequencies.h; sourceTree = "<group>"; };
 		B9869C6428673755004C4E18 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		B9869C6528673755004C4E18 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		B98823DE297626B800477516 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B98823DF297626B800477516 /* BackgroundTasks.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BackgroundTasks.framework; path = System/Library/Frameworks/BackgroundTasks.framework; sourceTree = SDKROOT; };
 		B98903842973486E00BB3174 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B99077DB285AD0AF004F494E /* ToneBarrier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToneBarrier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B99077DE285AD0AF004F494E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -61,7 +68,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B93226272973A7A8001B6EF7 /* AVRouting.framework in Frameworks */,
+				B98823DB297626B700477516 /* AVFAudio.framework in Frameworks */,
+				B98823DD297626B700477516 /* AVRouting.framework in Frameworks */,
+				B98823E1297626B800477516 /* BackgroundTasks.framework in Frameworks */,
+				B98823DC297626B700477516 /* AVKit.framework in Frameworks */,
 				B93226252973A79A001B6EF7 /* AVFAudio.framework in Frameworks */,
+				B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */,
 				B93226292973A7DB001B6EF7 /* AVKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +84,8 @@
 		B9869C6328673755004C4E18 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B98823DE297626B800477516 /* AVFoundation.framework */,
+				B98823DF297626B800477516 /* BackgroundTasks.framework */,
 				B93226282973A7DB001B6EF7 /* AVKit.framework */,
 				B93226262973A7A8001B6EF7 /* AVRouting.framework */,
 				B93226242973A79A001B6EF7 /* AVFAudio.framework */,
@@ -281,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -333,7 +347,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -348,7 +362,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = N9987K9442;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToneBarrier/Info.plist;
@@ -368,6 +382,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.demonicactivity.bush.alan.james.ToneBarrier;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -380,7 +397,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = N9987K9442;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToneBarrier/Info.plist;
@@ -400,6 +417,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.demonicactivity.bush.alan.james.ToneBarrier;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

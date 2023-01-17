@@ -214,6 +214,8 @@ static void (^setup_audio_session)(void) = ^{
         [_audioEngine connect:_reverb to:_mixerNode format:[_mixerNode outputFormatForBus:0]];
         
         
+        setup_audio_session();
+        
 //        __autoreleasing NSError *error = nil;
 //        [_audioEngine startAndReturnError:&error];
         
@@ -221,11 +223,6 @@ static void (^setup_audio_session)(void) = ^{
     }
     
     return self;
-}
-
-- (float)generateRandomNumberBetweenMin:(int)min Max:(int)max
-{
-    return ( (arc4random() % (max-min+1)) + min );
 }
 
 
@@ -317,20 +314,18 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
 
 - (BOOL)start
 {
-    if (self.audioEngine.isRunning == NO)
+    NSError *error = nil;
+    if (self.audioEngine.isRunning == NO && [_audioEngine startAndReturnError:&error])
     {
-        NSError *error = nil;
-        [_audioEngine startAndReturnError:&error];
-        NSLog(@"error: %@", error);
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:_audioEngine userInfo:nil];
-
+        printf("\n%s\nerror: %s\n", __PRETTY_FUNCTION__, error.localizedFailureReason.UTF8String);
+        
         if (![self->_playerOneNode isPlaying] || ![self->_playerTwoNode isPlaying])
         {
             [self->_playerOneNode play];
             [self->_playerTwoNode play];
             NSError *error = nil;
             [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
-            NSLog(@"error: %@", error);
+            NSLog(@"error: %@", error.localizedFailureReason);
         }
 
         if (self->_playerOneNode)
@@ -352,7 +347,7 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
             }];
         }
     }
-    return _audioEngine.isRunning;
+    return [ToneGenerator.sharedGenerator.audioEngine isRunning];
 }
 
 NSArray<Frequencies *> * (^pairFrequencies)(NSArray<Frequencies *> *, AVAudioTime *) = ^NSArray<Frequencies *> * (NSArray<Frequencies *> * frequenciesPair, AVAudioTime *time)
@@ -955,14 +950,14 @@ typedef void (^DataRenderedCompletionBlock)(NSArray<Frequencies *> * frequencyPa
     //    dispatch_async(dispatch_get_main_queue(), ^{
     //    [self->_playerOneNode stop];
     //    [self->_playerTwoNode stop];
-    if (self.audioEngine.isRunning == YES) [self->_audioEngine pause];
+    if ([ToneGenerator.sharedGenerator.audioEngine isRunning]) [self->_audioEngine pause];
     //        [self.playerOneNode reset];
     //        [self.playerTwoNode reset];
     
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:self.audioEngine userInfo:nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"ToneBarrierPlayingNotification" object:self.audioEngine userInfo:nil];
     
-    return self.audioEngine.isRunning;
+    return [ToneGenerator.sharedGenerator.audioEngine isRunning];
     //    });
 }
 

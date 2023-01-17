@@ -34,7 +34,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIImageView *heartRateImage;
 
-@property (assign) id toneBarrierPlayingObserver;
+//@property (assign) id toneBarrierPlayingObserver;
 
 @end
 
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSUInteger, HeartRateMonitorStatus) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDeviceStatus) name:UIDeviceBatteryStateDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDeviceStatus) name:NSProcessInfoPowerStateDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDeviceStatus) name:AVAudioSessionRouteChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(togglePlayButton) name:@"ToneBarrierPlayingNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleToneGenerator:) name:@"ToneBarrierPlayingNotification" object:nil];
     
 }
 
@@ -212,8 +212,8 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
       @"UIDeviceBatteryLevelDidChangeNotification"      : @(batteryLevel(device)),
       @"UIDeviceBatteryStateDidChangeNotification"      : @(batteryState(device)),
       @"NSProcessInfoPowerStateDidChangeNotification"   : @(powerState()),
-      @"AVAudioSessionRouteChangeNotification"          : @(audioRoute()),
-      @"ToneBarrierPlayingNotification"                 : @([ToneGenerator.sharedGenerator.audioEngine isRunning])};
+      @"AVAudioSessionRouteChangeNotification"          : @(audioRoute())};
+//      @"ToneBarrierPlayingNotification"                 : @([ToneGenerator.sharedGenerator.audioEngine isRunning])};
     
     return status;
 };
@@ -317,34 +317,24 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
 
 - (IBAction)toggleToneGenerator:(UIButton *)sender
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [sender setSelected:((![ToneGenerator.sharedGenerator.audioEngine isRunning]) && [ToneGenerator.sharedGenerator start]) || ^ BOOL { [ToneGenerator.sharedGenerator stop]; return [ToneGenerator.sharedGenerator.audioEngine isRunning]; }()];
-    });
-    NSLog(@"%@", [sender description]);
+//    dispatch_async(dispatch_get_main_queue(), ^{
+        [sender setSelected:^ BOOL { return ((![ToneGenerator.sharedGenerator.audioEngine isRunning] && [ToneGenerator.sharedGenerator start]) || [ToneGenerator.sharedGenerator stop]); }()];
+//    });
+    NSLog(@"Audio engine %@",
+          ([ToneGenerator.sharedGenerator.audioEngine isRunning])
+          ? @"is running" : @"is not running");
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        if (![ToneGenerator.sharedGenerator.audioEngine isRunning]) {
 //            [ToneGenerator.sharedGenerator start];
 //        } else if ([ToneGenerator.sharedGenerator.audioEngine isRunning]) {
-//            [ToneGenerator.sharedGenerator stop];
-//        }
-//    });
+//            [ToneGenerator.sharedGenerator stp
 //    [self updateDeviceStatus];
-}
-
-- (void)togglePlayButton
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([ToneGenerator.sharedGenerator.audioEngine isRunning]) {
-            [self.playButton setImage:[UIImage systemImageNamed:@"stop"] forState:UIControlStateNormal];
-        } else if (![ToneGenerator.sharedGenerator.audioEngine isRunning]) {
-            [self.playButton setImage:[UIImage systemImageNamed:@"play"] forState:UIControlStateNormal];
-        }
-    });
 }
 
 - (void)handleInterruption:(NSNotification *)notification
 {
-    _wasPlaying = ([ToneGenerator.sharedGenerator.audioEngine isRunning]) ? TRUE : FALSE;
+    _wasPlaying = ([ToneGenerator.sharedGenerator.audioEngine isRunning])
+    ? TRUE : FALSE;
     
     NSDictionary *userInfo = [notification userInfo];
     
