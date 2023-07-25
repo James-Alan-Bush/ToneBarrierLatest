@@ -29,7 +29,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *batteryImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *batteryLevelImageView;
 //@property (weak, nonatomic) IBOutlet UIImageView *playButton;
-@property (weak, nonatomic) IBOutlet AVRoutePickerView *routePickerVIew;
+@property (weak, nonatomic) IBOutlet AVRoutePickerView *routePickerView;
 
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIImageView *heartRateImage;
@@ -42,11 +42,12 @@
 {
     CAGradientLayer * gradient;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.routePickerVIew setActiveTintColor:[UIColor systemBlueColor]];
-    [self.routePickerVIew setDelegate:(id<AVRoutePickerViewDelegate> _Nullable)self];
+    [self.routePickerView setActiveTintColor:[UIColor systemBlueColor]];
+    [self.routePickerView setDelegate:(id<AVRoutePickerViewDelegate> _Nullable)self];
     
     gradient = [CAGradientLayer new];
     gradient.frame = self.view.frame;
@@ -74,6 +75,7 @@
     
     MPRemoteCommandHandlerStatus (^remote_command_handler)(MPRemoteCommandEvent * _Nonnull) = ^ MPRemoteCommandHandlerStatus (MPRemoteCommandEvent * _Nonnull event) {
         [self toggleToneGenerator:self->_playButton];
+        [[MPNowPlayingInfoCenter defaultCenter] setPlaybackState:ToneGenerator.sharedAudioEngine.isRunning];
         return MPRemoteCommandHandlerStatusSuccess;
     };
     
@@ -318,10 +320,12 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
 - (IBAction)toggleToneGenerator:(UIButton *)sender
 {
 //    dispatch_async(dispatch_get_main_queue(), ^{
-        [sender setSelected:^ BOOL { return ((![ToneGenerator.sharedGenerator.audioEngine isRunning] && [ToneGenerator.sharedGenerator start]) || [ToneGenerator.sharedGenerator stop]); }()];
+    // TO-DO: Rewrite to return audio engine running state only
+    //        Choose start or stop based on initial running state
+    [sender setSelected:^ BOOL { return ((![ToneGenerator.sharedAudioEngine isRunning] && ([ToneGenerator.sharedGenerator start])) || ({[ToneGenerator.sharedGenerator stop];})); }()];
 //    });
     NSLog(@"Audio engine %@",
-          ([ToneGenerator.sharedGenerator.audioEngine isRunning])
+          ([ToneGenerator.sharedAudioEngine isRunning])
           ? @"is running" : @"is not running");
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        if (![ToneGenerator.sharedGenerator.audioEngine isRunning]) {
@@ -333,12 +337,12 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
 
 - (void)handleInterruption:(NSNotification *)notification
 {
-    _wasPlaying = ([ToneGenerator.sharedGenerator.audioEngine isRunning])
+    _wasPlaying = ([ToneGenerator.sharedAudioEngine isRunning])
     ? TRUE : FALSE;
     
     NSDictionary *userInfo = [notification userInfo];
     
-    if ([ToneGenerator.sharedGenerator.audioEngine isRunning])
+    if ([ToneGenerator.sharedAudioEngine isRunning])
     {
         NSInteger typeValue = [[userInfo objectForKey:AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
         AVAudioSessionInterruptionType type = (AVAudioSessionInterruptionType)typeValue;
@@ -369,6 +373,14 @@ static NSDictionary<NSString *, id> * (^deviceStatus)(UIDevice *) = ^NSDictionar
     
    
     [self updateDeviceStatus];
+}
+
+- (void)routePickerViewWillBeginPresentingRoutes:(AVRoutePickerView *)routePickerView {
+    
+}
+
+- (void)routePickerViewDidEndPresentingRoutes:(AVRoutePickerView *)routePickerView {
+    
 }
 
 @end

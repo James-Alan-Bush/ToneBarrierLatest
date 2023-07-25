@@ -44,9 +44,8 @@ typedef void (^CreateAudioBufferCompletionBlock)(AVAudioPCMBuffer * _Nonnull buf
 
 @interface ToneGenerator : NSObject
 
-@property (nonatomic, readonly) AVAudioEngine * _Nonnull audioEngine;
-
 + (nonnull ToneGenerator *)sharedGenerator;
++ (nonnull AVAudioEngine *)sharedAudioEngine;
 
 @property (nonatomic, weak) id<ToneWaveRendererDelegate> _Nullable toneWaveRendererDelegate;
 @property (nonatomic, strong) dispatch_source_t _Nullable timer;
