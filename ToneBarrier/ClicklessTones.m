@@ -10,15 +10,13 @@
 #include "easing.h"
 
 
-static const float high_frequency = 1750.0;
-static const float low_frequency  = 500.0;
-static const float min_duration   = 0.25;
-static const float max_duration   = 2.00;
+static const double high_frequency = 1750.0;
+static const double low_frequency  = 500.0;
+static const double min_duration   = 0.25;
+static const double max_duration   = 2.00;
 
 @interface ClicklessTones ()
 {
-    double frequency[2];
-    NSInteger alternate_channel_flag;
     double duration_bifurcate;
 }
 
@@ -47,24 +45,12 @@ static const float max_duration   = 2.00;
     return self;
 }
 
-typedef NS_ENUM(NSUInteger, Fade) {
-    FadeOut,
-    FadeIn
-};
-
-float normalize(float unscaledNum, float minAllowed, float maxAllowed, float min, float max) {
+static __inline__ double normalize(double unscaledNum, double minAllowed, double maxAllowed, double min, double max) {
     return (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed;
 }
 
-double (^fade)(Fade, double, double) = ^double(Fade fadeType, double x, double freq_amp)
-{
-    double fade_effect = freq_amp * ((fadeType == FadeIn) ? x : (1.0 - x));
-    
-    return fade_effect;
-};
-
-static __inline__ CGFloat RandomFloatBetween(CGFloat a, CGFloat b) {
-    return a + (b - a) * ((CGFloat) random() / (CGFloat) RAND_MAX);
+static __inline__ double RandomDoubleBetween(double a, double b) {
+    return a + (b - a) * ((double) random() / (double) RAND_MAX);
 }
 
 //- (float)generateRandomNumberBetweenMin:(int)min Max:(int)max
@@ -140,7 +126,7 @@ double Tonality(double frequency, TonalInterval interval, TonalHarmony harmony)
     return new_frequency;
 }
 
-double Envelope(double x, TonalEnvelope envelope)
+static __inline__ double Envelope(double x, TonalEnvelope envelope)
 {
     double x_envelope = 1.0;
     switch (envelope) {
@@ -193,7 +179,7 @@ static double(^TrillInverse)(double, double) =  ^ double(double time, double tri
 
 static double(^Amplitude)(double, double) = ^ double(double time, double frequency)
 {
-    return pow(sin(time * M_PI), 3.0) * 0.5;
+    return pow(sin(time * M_PI * frequency), 3.0);
 };
 
 static double(^Interval)(double, TonalInterval) = ^ double (double frequency, TonalInterval interval) {
@@ -234,21 +220,20 @@ static double(^Interval)(double, TonalInterval) = ^ double (double frequency, To
     return new_frequency;
 };
 
-double Normalize(double a, double b)
+static __inline__ double Normalize(double a, double b)
 {
     return (double)(a / b);
 }
 
 - (void)createAudioBufferWithFormat:(AVAudioFormat *)audioFormat completionBlock:(CreateAudioBufferCompletionBlock)createAudioBufferCompletionBlock
 {
-    static unsigned int fade_bit = 1;
     static AVAudioPCMBuffer * (^createAudioBuffer)(double);
     createAudioBuffer = ^AVAudioPCMBuffer * (double frequency) {
-        AVAudioFrameCount frameCount = audioFormat.sampleRate * (audioFormat.channelCount / RandomFloatBetween(2, 4));
+        AVAudioFrameCount frameCount = audioFormat.sampleRate * (audioFormat.channelCount / RandomDoubleBetween(2, 4));
         AVAudioPCMBuffer *pcmBuffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFormat frameCapacity:frameCount];
         pcmBuffer.frameLength = frameCount;
         float *left_channel  = pcmBuffer.floatChannelData[0];
-        float *right_channel = (audioFormat.channelCount == 2) ? pcmBuffer.floatChannelData[1] : nil;
+        float *right_channel = (audioFormat.channelCount == 2) ? pcmBuffer.floatChannelData[1] : left_channel;
         
         double amplitude_frequency = arc4random_uniform(4) + 2;
         double harmonized_frequency = Tonality(frequency, TonalIntervalRandom, TonalHarmonyRandom);
@@ -259,9 +244,9 @@ double Normalize(double a, double b)
             double normalized_index = Normalize(index, frameCount);
             double trill            = Trill(normalized_index, trill_interval);
             double trill_inverse    = TrillInverse(normalized_index, trill_interval);
-            double amplitude        = Frequency(normalized_index, amplitude_frequency); // NormalizedSineEaseInOut(normalized_index, amplitude_frequency);
-            left_channel[index]     = /*fade((fade_bit ^= 1), normalized_index, NormalizedSineEaseInOut(normalized_index, frequencyLeft)*/ Frequency(normalized_index, frequency)  * amplitude * trill;
-            right_channel[index]    = /*fade((fade_bit ^= 1), normalized_index, NormalizedSineEaseInOut(normalized_index, harmonized_frequency)*/ Frequency(normalized_index, harmonized_frequency) * amplitude * trill_inverse; // fade((leading_fade == FadeOut) ? FadeIn : leading_fade, normalized_index, (SineEaseInOutFrequency(normalized_index, frequencyRight) * NormalizedSineEaseInOutAmplitude((1.0 - normalized_index), 1)));
+            double amplitude        = Amplitude(normalized_index, amplitude_frequency);
+            left_channel[index]     = Frequency(normalized_index, frequency)  * amplitude * trill;
+            right_channel[index]    = Frequency(normalized_index, harmonized_frequency) * amplitude * trill_inverse;
         }
         
         return pcmBuffer;
