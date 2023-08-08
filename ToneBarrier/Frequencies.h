@@ -26,8 +26,6 @@ typedef NS_ENUM(NSUInteger, StereoChannel) {
 @property (strong, nonatomic) NSNumber *channel;
 @property (strong, nonatomic) AVAudioTime *time;
 
-// TO-DO: add schedule offset and duration property (although only duration is needed for now)
-
 
 @end
 

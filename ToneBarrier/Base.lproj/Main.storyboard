@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22146" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="9it-0F-OTs">
     <device id="retina6_72" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22122"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -17,6 +18,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="61ad9c0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ohV-xM-Pxf">
+                                <rect key="frame" x="21.666666666666657" y="71.666666666666671" width="387" height="21"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.14999999999999999" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-QY-MZd">
                                 <rect key="frame" x="0.0" y="9" width="430" height="940.33333333333337"/>
                                 <color key="backgroundColor" systemColor="systemFillColor"/>
@@ -55,6 +63,7 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="p0y-QY-MZd" firstAttribute="width" secondItem="ajU-mF-TYi" secondAttribute="width" id="1Ru-ld-mea"/>
+                            <constraint firstItem="ohV-xM-Pxf" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="7mB-u8-8Pq"/>
                             <constraint firstItem="p0y-QY-MZd" firstAttribute="height" secondItem="ajU-mF-TYi" secondAttribute="height" id="8V7-pk-cE9"/>
                             <constraint firstItem="bPx-NW-Wzl" firstAttribute="bottom" secondItem="czV-Br-Vf9" secondAttribute="bottom" id="AFd-6c-YoL"/>
                             <constraint firstItem="CxI-Ah-rhD" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="GFs-d2-wT1"/>
@@ -63,7 +72,9 @@
                             <constraint firstItem="bPx-NW-Wzl" firstAttribute="width" secondItem="CxI-Ah-rhD" secondAttribute="width" multiplier="0.75" id="eK9-S9-Zjw"/>
                             <constraint firstItem="bPx-NW-Wzl" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="fFu-kY-2w1"/>
                             <constraint firstItem="p0y-QY-MZd" firstAttribute="centerX" secondItem="czV-Br-Vf9" secondAttribute="centerX" id="gt4-GH-CO7"/>
+                            <constraint firstItem="ohV-xM-Pxf" firstAttribute="top" secondItem="czV-Br-Vf9" secondAttribute="centerY" multiplier="0.15" id="ipN-un-Vns"/>
                             <constraint firstItem="CxI-Ah-rhD" firstAttribute="width" secondItem="czV-Br-Vf9" secondAttribute="height" multiplier="1:1" id="pSC-d8-CRf"/>
+                            <constraint firstItem="ohV-xM-Pxf" firstAttribute="width" secondItem="czV-Br-Vf9" secondAttribute="width" multiplier="0.9" id="s1n-bI-4I7"/>
                             <constraint firstItem="bPx-NW-Wzl" firstAttribute="height" secondItem="CxI-Ah-rhD" secondAttribute="height" multiplier="0.75" id="sxT-Ey-2bI"/>
                         </constraints>
                     </view>
@@ -73,6 +84,7 @@
                     <connections>
                         <outlet property="playButton" destination="CxI-Ah-rhD" id="dEG-a2-sDT"/>
                         <outlet property="routePickerView" destination="bPx-NW-Wzl" id="SWR-Uj-yqn"/>
+                        <outlet property="versionLabel" destination="ohV-xM-Pxf" id="D05-Fe-POg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lza-2j-ClS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

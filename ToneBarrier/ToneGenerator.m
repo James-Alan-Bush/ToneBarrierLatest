@@ -962,6 +962,9 @@ typedef void (^DataRenderedCompletionBlock)(NSArray<Frequencies *> * frequencyPa
 
 - (BOOL)stop
 {
+    // TO-DO: Disable proximity sensor
+    
+    
     if ([sharedAudioEngine isRunning]) [sharedAudioEngine pause];
     return [sharedAudioEngine isRunning];
 }
