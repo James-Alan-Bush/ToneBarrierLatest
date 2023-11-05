@@ -198,7 +198,7 @@ static double(^TrillInverse)(double, double) =  ^ double(double time, double tri
 
 static double(^Amplitude)(double, double) = ^ double(double time, double frequency)
 {
-    return pow(sin(time * M_PI * frequency), 3.0);
+    return pow(sin(time * M_PI * frequency), 2.0);
 };
 
 static double(^Interval)(double, TonalInterval) = ^ double (double frequency, TonalInterval interval) {
@@ -273,8 +273,8 @@ AVAudioPCMBuffer *pcmBuffer = nil;
             double trill            = Trill(*(normalized_times_ref + *frame_t), trill_interval);
             double trill_inverse    = TrillInverse(*(normalized_times_ref + *frame_t), trill_interval);
             double amplitude        = Amplitude(*(normalized_times_ref + *frame_t), amplitude_frequency);
-            left_channel[*frame_t]  = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), frequency)            * amplitude * trill);
-            right_channel[*frame_t] = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), harmonized_frequency) * amplitude * trill_inverse);
+            left_channel[*frame_t]  = /**gain_adjustment_t * */(Frequency(*(normalized_times_ref + *frame_t), frequency)            * amplitude * trill);
+            right_channel[*frame_t] = /**gain_adjustment_t * */(Frequency(*(normalized_times_ref + *frame_t), harmonized_frequency) * amplitude * trill_inverse);
         }
         
         return pcmBuffer;
