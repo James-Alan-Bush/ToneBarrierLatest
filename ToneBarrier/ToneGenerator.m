@@ -205,31 +205,38 @@ static void (^setup_audio_session)(void) = ^{
         //        _audioEngine = audio_engine;
         _mixerNode = sharedAudioEngine.mainMixerNode;
         
-        //        _environmentNode = [[AVAudioEnvironmentNode alloc] init];
-        //        [_environmentNode setOutputType:AVAudioEnvironmentOutputTypeHeadphones];
-        //        [_environmentNode setOutputVolume:1.0];
-        //        [_audioEngine attachNode:_environmentNode];
-        
         _submixer = [[AVAudioMixerNode alloc] init];
         [sharedAudioEngine attachNode:_submixer];
-        
-        _reverb = [[AVAudioUnitReverb alloc] init];
-        [_reverb loadFactoryPreset:AVAudioUnitReverbPresetLargeHall];
-        [_reverb setWetDryMix:50];
-        [sharedAudioEngine attachNode:_reverb];
         
         _playerOneNode = [[AVAudioPlayerNode alloc] init];
         [_playerOneNode setRenderingAlgorithm:AVAudio3DMixingRenderingAlgorithmAuto];
         [_playerOneNode setSourceMode:AVAudio3DMixingSourceModeAmbienceBed];
         [sharedAudioEngine attachNode:_playerOneNode];
-        [sharedAudioEngine connect:_playerOneNode to:_submixer format:[_playerOneNode outputFormatForBus:0]];
+        [sharedAudioEngine connect:_playerOneNode to:_submixer format:[_mixerNode outputFormatForBus:0]];
         
         _playerTwoNode = [[AVAudioPlayerNode alloc] init];
         [_playerTwoNode setRenderingAlgorithm:AVAudio3DMixingRenderingAlgorithmAuto];
         [_playerTwoNode setSourceMode:AVAudio3DMixingSourceModeAmbienceBed];
         [sharedAudioEngine attachNode:_playerTwoNode];
-        [sharedAudioEngine connect:_playerTwoNode to:_submixer format:[_playerTwoNode outputFormatForBus:0]];
+        [sharedAudioEngine connect:_playerTwoNode to:_submixer format:[_mixerNode outputFormatForBus:0]];
         
+        _reverb = [[AVAudioUnitReverb alloc] init];
+        [_reverb loadFactoryPreset:AVAudioUnitReverbPresetLargeHall];
+        [_reverb setWetDryMix:50];
+        [sharedAudioEngine attachNode:_reverb];
+//        
+//        _playerOneNode = [[AVAudioPlayerNode alloc] init];
+//        [_playerOneNode setRenderingAlgorithm:AVAudio3DMixingRenderingAlgorithmAuto];
+//        [_playerOneNode setSourceMode:AVAudio3DMixingSourceModeAmbienceBed];
+//        [sharedAudioEngine attachNode:_playerOneNode];
+//        [sharedAudioEngine connect:_playerOneNode to:_submixer format:[_playerOneNode outputFormatForBus:0]];
+//        
+//        _playerTwoNode = [[AVAudioPlayerNode alloc] init];
+//        [_playerTwoNode setRenderingAlgorithm:AVAudio3DMixingRenderingAlgorithmAuto];
+//        [_playerTwoNode setSourceMode:AVAudio3DMixingSourceModeAmbienceBed];
+//        [sharedAudioEngine attachNode:_playerTwoNode];
+//        [sharedAudioEngine connect:_playerTwoNode to:_submixer format:[_playerTwoNode outputFormatForBus:0]];
+//        
         [sharedAudioEngine connect:_submixer to:_reverb format:[_mixerNode outputFormatForBus:0]];
         [sharedAudioEngine connect:_reverb to:_mixerNode format:[_mixerNode outputFormatForBus:0]];
         
