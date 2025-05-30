@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ClicklessTones : NSObject <ToneBarrierPlayerDelegate>
 
-- (instancetype)initWithAudioFormat:(AVAudioFormat *)audio_format;
+//- (instancetype)initWithAudioFormat:(AVAudioFormat *)audio_format;
 - (void)createAudioBufferWithFormat:(AVAudioFormat *)audioFormat completionBlock:(CreateAudioBufferCompletionBlock)createAudioBufferCompletionBlock;
 //- (void)createAudioBufferWithFormat:(AVAudioFormat *)audioFormat buffer_ptr_1:(AVAudioPCMBuffer **)buffer_t_1 buffer_ptr_2:(AVAudioPCMBuffer **)buffer_t_2 completionBlock:(CreateAudioBufferCompletionBlock)createAudioBufferCompletionBlock;
 

@@ -64,9 +64,9 @@ static typeof(normalized_times_ref) (^normalized_times)(AVAudioFrameCount) = ^ty
     return self;
 }
 
-static __inline__ double normalize(double unscaledNum, double minAllowed, double maxAllowed, double min, double max) {
-    return (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed;
-}
+//static __inline__ double normalize(double unscaledNum, double minAllowed, double maxAllowed, double min, double max) {
+//    return (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed;
+//}
 
 static __inline__ double RandomDoubleBetween(double a, double b) {
     return a + (b - a) * ((double) random() / (double) RAND_MAX);
