@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -62,7 +62,6 @@
 /* Begin PBXFrameworksBuildPhase section */
 		B99077D8285AD0AF004F494E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				B93226272973A7A8001B6EF7 /* AVRouting.framework in Frameworks */,
 				B98823DB297626B700477516 /* AVFAudio.framework in Frameworks */,
@@ -70,7 +69,6 @@
 				B98823DC297626B700477516 /* AVKit.framework in Frameworks */,
 				B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -148,8 +146,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = ToneBarrier;
 			productName = ToneBarrier;
 			productReference = B99077DB285AD0AF004F494E /* ToneBarrier.app */;
@@ -170,7 +166,6 @@
 				};
 			};
 			buildConfigurationList = B99077D6285AD0AF004F494E /* Build configuration list for PBXProject "ToneBarrier" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -178,6 +173,7 @@
 				Base,
 			);
 			mainGroup = B99077D2285AD0AF004F494E;
+			preferredProjectObjectVersion = 90;
 			productRefGroup = B99077DC285AD0AF004F494E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -190,20 +186,17 @@
 /* Begin PBXResourcesBuildPhase section */
 		B99077D9285AD0AF004F494E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				B99077EE285AD0B0004F494E /* LaunchScreen.storyboard in Resources */,
 				B938942A2A704C3E0087CE2F /* Media.xcassets in Resources */,
 				B99077E9285AD0AF004F494E /* Main.storyboard in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B99077D7285AD0AF004F494E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				B96C25B42865F1A400A75975 /* easing.c in Sources */,
 				B99077E6285AD0AF004F494E /* ViewController.m in Sources */,
@@ -215,7 +208,6 @@
 				B9869C62286733DA004C4E18 /* Frequencies.m in Sources */,
 				B9869C5F28672FAC004C4E18 /* ToneGenerator.m in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -239,7 +231,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		B99077F2285AD0B0004F494E /* Debug */ = {
+		B99077F2285AD0B0004F494E /* Debug configuration for PBXProject "ToneBarrier" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -291,7 +283,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -299,7 +291,7 @@
 			};
 			name = Debug;
 		};
-		B99077F3285AD0B0004F494E /* Release */ = {
+		B99077F3285AD0B0004F494E /* Release configuration for PBXProject "ToneBarrier" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -345,7 +337,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -353,7 +345,7 @@
 			};
 			name = Release;
 		};
-		B99077F5285AD0B0004F494E /* Debug */ = {
+		B99077F5285AD0B0004F494E /* Debug configuration for PBXNativeTarget "ToneBarrier" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ToneBarrierAppIcon;
@@ -389,7 +381,7 @@
 			};
 			name = Debug;
 		};
-		B99077F6285AD0B0004F494E /* Release */ = {
+		B99077F6285AD0B0004F494E /* Release configuration for PBXNativeTarget "ToneBarrier" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ToneBarrierAppIcon;
@@ -431,19 +423,17 @@
 		B99077D6285AD0AF004F494E /* Build configuration list for PBXProject "ToneBarrier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B99077F2285AD0B0004F494E /* Debug */,
-				B99077F3285AD0B0004F494E /* Release */,
+				B99077F2285AD0B0004F494E /* Debug configuration for PBXProject "ToneBarrier" */,
+				B99077F3285AD0B0004F494E /* Release configuration for PBXProject "ToneBarrier" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		B99077F4285AD0B0004F494E /* Build configuration list for PBXNativeTarget "ToneBarrier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B99077F5285AD0B0004F494E /* Debug */,
-				B99077F6285AD0B0004F494E /* Release */,
+				B99077F5285AD0B0004F494E /* Debug configuration for PBXNativeTarget "ToneBarrier" */,
+				B99077F6285AD0B0004F494E /* Release configuration for PBXNativeTarget "ToneBarrier" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */

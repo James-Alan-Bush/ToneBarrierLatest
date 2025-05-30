@@ -127,7 +127,7 @@ static __inline__ double Tonality(double frequency, TonalInterval interval, Tona
     double new_frequency = frequency;
     switch (harmony) {
         case TonalHarmonyDissonance:
-            new_frequency *= (1.1 + drand48());
+            new_frequency *= (1.0 + drand48());
             break;
             
         case TonalHarmonyConsonance:
@@ -193,7 +193,7 @@ static double(^Trill)(double, double) = ^ double(double time, double trill)
 
 static double(^TrillInverse)(double, double) =  ^ double(double time, double trill)
 {
-    return pow(-(2.0 * pow(sin(M_PI * time * trill), 2.0) * 0.5) + 1.0, 4.0);
+    return pow(-(2.0 * pow(sin(M_PI * time * trill), 2.0) * 0.5), 4.0);
 };
 
 static double(^Amplitude)(double, double) = ^ double(double time, double frequency)
@@ -250,11 +250,13 @@ static double gain_adjustment = 0;
 typeof(gain_adjustment) * gain_adjustment_t = &gain_adjustment;
 AVAudioPCMBuffer *pcmBuffer = nil;
 
+static unsigned long trills_index = 1;
+
 - (void)createAudioBufferWithFormat:(AVAudioFormat *)audioFormat completionBlock:(CreateAudioBufferCompletionBlock)createAudioBufferCompletionBlock
 {
     static AVAudioPCMBuffer * (^createAudioBuffer)(double);
     createAudioBuffer = ^AVAudioPCMBuffer * (double frequency) {
-        AVAudioFrameCount frame_count = audioFormat.sampleRate * (audioFormat.channelCount / RandomDoubleBetween(2, 4));
+        AVAudioFrameCount frame_count = (audioFormat.sampleRate * audioFormat.channelCount) / RandomDoubleBetween(2, 4);
         pcmBuffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFormat frameCapacity:frame_count];
         pcmBuffer.frameLength = frame_count;
         float *left_channel  = pcmBuffer.floatChannelData[0];
@@ -266,15 +268,18 @@ AVAudioPCMBuffer *pcmBuffer = nil;
         
         normalized_times(frame_count);
         
+        trills_index ^= 1;
+        
         for (*frame_t = 0; *frame_t < frame_count; *frame_t += 1) {
-            *gain_adjustment_t = sin((*(normalized_times_ref + *frame_t) - 0.5) * M_PI);
+            *gain_adjustment_t = 1.0; //sin((*(normalized_times_ref + *frame_t) - 0.5) * M_PI);
 //            NSLog(@"*gain_adjustment_t == %f\t\t%f", *gain_adjustment_t, *(normalized_times_ref + *frame_t));
             
             double trill            = Trill(*(normalized_times_ref + *frame_t), trill_interval);
             double trill_inverse    = TrillInverse(*(normalized_times_ref + *frame_t), trill_interval);
+            double trills[2] = {trill, trill_inverse};
             double amplitude        = Amplitude(*(normalized_times_ref + *frame_t), amplitude_frequency);
-            left_channel[*frame_t]  = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), frequency)            * amplitude * trill);
-            right_channel[*frame_t] = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), harmonized_frequency) * amplitude * trill_inverse);
+            left_channel[*frame_t]  = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), frequency)            * amplitude * trills[trills_index]);
+            right_channel[*frame_t] = *gain_adjustment_t * (Frequency(*(normalized_times_ref + *frame_t), harmonized_frequency) * amplitude * trills[trills_index ^ 1]);
         }
         
         return pcmBuffer;

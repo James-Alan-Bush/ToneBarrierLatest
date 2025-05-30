@@ -29,6 +29,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *batteryImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *batteryLevelImageView;
 //@property (weak, nonatomic) IBOutlet UIImageView *playButton;
+@property (weak, nonatomic) IBOutlet UIImageView *waveformImageView;
+
 @property (weak, nonatomic) IBOutlet AVRoutePickerView *routePickerView;
 
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
@@ -56,7 +58,7 @@
     gradient.frame = self.view.frame;
     [gradient setAllowsEdgeAntialiasing:TRUE];
     [gradient setColors:@[(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.f].CGColor, (id)[UIColor blackColor].CGColor]];
-    [self.view.layer addSublayer:gradient];
+    [self.waveformImageView.layer addSublayer:gradient];
     
     [self.playButton setImage:[UIImage systemImageNamed:@"stop"]  forState:UIControlStateSelected];
     [self.playButton setImage:[UIImage systemImageNamed:@"play"]  forState:UIControlStateNormal];
