@@ -93,6 +93,11 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UIDeviceBatteryLevelDidChangeNotification object:self];
     [self addStatusObservers];
+    
+    AppDelegate *appDelegate = (AppDelegate *)UIApplication.sharedApplication.delegate;
+    appDelegate.deviceStatusInterfaceDelegate = self;
+    
+    NSLog(@"Assigned deviceStatusInterfaceDelegate = %@", appDelegate.deviceStatusInterfaceDelegate);
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {

@@ -8,6 +8,7 @@
 #import "AppDelegate.h"
 #import <BackgroundTasks/BackgroundTasks.h>
 #import "ToneGenerator.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 {
@@ -19,7 +20,7 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.blogspot.demonicactivity.bush.alan.james.JABPlanetaryHourToneBarrier.receiveApplicationContext"
+    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:@"com.blogspot.demonicactivity.bush.alan.james.ToneBarrier"
                                                           usingQueue:dispatch_get_main_queue() launchHandler:^(__kindof BGTask * _Nonnull task) {
         if (self->timer) self->timer = nil;
         self->timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -30,12 +31,14 @@
         dispatch_resume(self->timer);
     }];
     
+    self.deviceStatusInterfaceDelegate = (ViewController *)self.window.rootViewController.childViewControllers.firstObject;
+    
     return YES;
 }
 
 - (void)scheduleAppRefresh
 {
-    BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.blogspot.demonicactivity.bush.alan.james.JABPlanetaryHourToneBarrier.receiveApplicationContext"];
+    BGAppRefreshTaskRequest *request = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:@"com.blogspot.demonicactivity.bush.alan.james.ToneBarrier"];
     [request setEarliestBeginDate:[NSDate date]];
     
     __autoreleasing NSError *error;

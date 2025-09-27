@@ -6,6 +6,8 @@
 //
 
 #import "SceneDelegate.h"
+#import "AppDelegate.h"
+#import "ViewController.h"
 
 @interface SceneDelegate ()
 
@@ -28,12 +30,11 @@
     // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
 }
 
-
 - (void)sceneDidBecomeActive:(UIScene *)scene {
-    // Called when the scene has moved from an inactive state to an active state.
-    // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+    if ([((AppDelegate *)UIApplication.sharedApplication.delegate).deviceStatusInterfaceDelegate respondsToSelector:@selector(updateDeviceStatus)]) {
+        [((AppDelegate *)UIApplication.sharedApplication.delegate).deviceStatusInterfaceDelegate updateDeviceStatus];
+    }
 }
-
 
 - (void)sceneWillResignActive:(UIScene *)scene {
     // Called when the scene will move from an active state to an inactive state.

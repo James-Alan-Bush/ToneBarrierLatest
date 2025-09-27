@@ -30,7 +30,7 @@
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.blogspot.demonicactivity.bush.alan.james.JABPlanetaryHourJABPlanetaryHourToneBarrier.receiveApplicationContext</string>
+		<string>com.blogspot.demonicactivity.bush.alan.james.ToneBarrier</string>
 	</array>
 </dict>
 </plist>
