@@ -106,6 +106,7 @@ static void (^setup_audio_session)(void) = ^{
     @try {
         __autoreleasing NSError *error = nil;
         [audioSession setCategory:(_Nonnull AVAudioSessionCategory)AVAudioSessionCategoryPlayback error:&error];
+        [audioSession setActive:TRUE error:&error];
         
         !(!error) ?: ^ (NSError ** error_t) {
             printf("Error configuring audio session:\n\t%s\n", [[*error_t debugDescription] UTF8String]);
@@ -161,7 +162,7 @@ static void (^setup_audio_session)(void) = ^{
                         break;
                     case AVAudioSessionRouteChangeReasonCategoryChange:
                         NSLog(@"     CategoryChange");
-                        NSLog(@"     New Category: %@", [[AVAudioSession sharedInstance] category]);
+                        NSLog(@"     New Category: %@", [audioSession category]);
                         break;
                     case AVAudioSessionRouteChangeReasonOverride:
                         NSLog(@"     Override");
@@ -179,7 +180,7 @@ static void (^setup_audio_session)(void) = ^{
                 NSLog(@"Previous route:\n");
                 NSLog(@"%@", routeDescription);
                 NSLog(@"Current route:\n");
-                NSLog(@"%@", [[AVAudioSession sharedInstance] currentRoute]);
+                NSLog(@"%@", [audioSession currentRoute]);
                 
             });
             
@@ -429,8 +430,8 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
             //            [self->_playerTwoNode prepareWithFrameCount:[[self->_mixerNode outputFormatForBus:0] sampleRate] * [[self->_mixerNode outputFormatForBus:0] channelCount]];
             [self->_playerTwoNode play];
             //            NSError *error = nil;
-            [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
-            NSLog(@"AVAudioSession activation at player_node playback -- error: %@", error.localizedFailureReason);
+//            [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
+//            NSLog(@"AVAudioSession activation at player_node playback -- error: %@", error.localizedFailureReason);
         }
         
         if (self->_playerOneNode)

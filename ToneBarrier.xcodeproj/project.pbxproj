@@ -14,10 +14,10 @@
 		B9869C5C28672EE8004C4E18 /* ToneBarrierPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5B28672EE8004C4E18 /* ToneBarrierPlayer.m */; };
 		B9869C5F28672FAC004C4E18 /* ToneGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5D28672FAC004C4E18 /* ToneGenerator.m */; };
 		B9869C62286733DA004C4E18 /* Frequencies.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C60286733DA004C4E18 /* Frequencies.m */; };
-		B98823DB297626B700477516 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226242973A79A001B6EF7 /* AVFAudio.framework */; };
 		B98823DC297626B700477516 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226282973A7DB001B6EF7 /* AVKit.framework */; };
 		B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DE297626B800477516 /* AVFoundation.framework */; };
 		B98823E1297626B800477516 /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DF297626B800477516 /* BackgroundTasks.framework */; };
+		B98E43F22E889EE700ADB32C /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226242973A79A001B6EF7 /* AVFAudio.framework */; };
 		B99077E0285AD0AF004F494E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077DF285AD0AF004F494E /* AppDelegate.m */; };
 		B99077E3285AD0AF004F494E /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077E2285AD0AF004F494E /* SceneDelegate.m */; };
 		B99077E6285AD0AF004F494E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077E5285AD0AF004F494E /* ViewController.m */; };
@@ -63,8 +63,8 @@
 		B99077D8285AD0AF004F494E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B98E43F22E889EE700ADB32C /* AVFAudio.framework in Frameworks */,
 				B93226272973A7A8001B6EF7 /* AVRouting.framework in Frameworks */,
-				B98823DB297626B700477516 /* AVFAudio.framework in Frameworks */,
 				B98823E1297626B800477516 /* BackgroundTasks.framework in Frameworks */,
 				B98823DC297626B700477516 /* AVKit.framework in Frameworks */,
 				B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */,
