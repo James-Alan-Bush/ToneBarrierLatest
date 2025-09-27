@@ -31,7 +31,7 @@
         dispatch_resume(self->timer);
     }];
     
-    self.deviceStatusInterfaceDelegate = (ViewController *)self.window.rootViewController.childViewControllers.firstObject;
+//    self.deviceStatusInterfaceDelegate = (ViewController *)self.window.rootViewController.childViewControllers.firstObject;
     
     return YES;
 }
@@ -64,7 +64,10 @@
     [task setExpirationHandler:^{
         NSLog(@"\n\nExpired task: %@", task_desc);
     }];
+    
+    self.deviceStatusInterfaceDelegate = (ViewController *)self.window.rootViewController.childViewControllers.firstObject;
     [self.deviceStatusInterfaceDelegate updateDeviceStatus];
+    
     [task setTaskCompletedWithSuccess:TRUE];
     NSLog(@"Completed task: %@", task.description);
 }
@@ -94,6 +97,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     NSLog(@"%s", __PRETTY_FUNCTION__);
+    self.deviceStatusInterfaceDelegate = (ViewController *)self.window.rootViewController.childViewControllers.firstObject;
     [self.deviceStatusInterfaceDelegate updateDeviceStatus];
 //    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 }

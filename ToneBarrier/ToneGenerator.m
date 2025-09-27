@@ -102,17 +102,10 @@ static void (^observe_notifications)(NSArray<notification> *) = ^ (NSArray<notif
 //        It should return another block that, when executed, removes the notification observer
 
 static void (^setup_audio_session)(void) = ^{
-    //    static AVAudioSession * session;
-    //    session = [AVAudioSession sharedInstance];
-    
+    AVAudioSession * audioSession = (AVAudioSession *)[AVAudioSession sharedInstance];
     @try {
         __autoreleasing NSError *error = nil;
-        //        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault routeSharingPolicy:AVAudioSessionRouteSharingPolicyLongFormAudio options:AVAudioSessionCategoryOptionAllowAirPlay | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault options:AVAudioSessionCategoryOptionAllowAirPlay | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
-        [[AVAudioSession sharedInstance] setSupportsMultichannelContent:TRUE  error:&error];
-        [[AVAudioSession sharedInstance] setPreferredInputNumberOfChannels:2  error:&error];
-        [[AVAudioSession sharedInstance] setPreferredOutputNumberOfChannels:2 error:&error];
-        [[AVAudioSession sharedInstance] setPrefersNoInterruptionsFromSystemAlerts:TRUE error:&error]; // TO-DO: Make this a user-specified preference
+        [audioSession setCategory:(_Nonnull AVAudioSessionCategory)AVAudioSessionCategoryPlayback error:&error];
         
         !(!error) ?: ^ (NSError ** error_t) {
             printf("Error configuring audio session:\n\t%s\n", [[*error_t debugDescription] UTF8String]);
@@ -128,71 +121,166 @@ static void (^setup_audio_session)(void) = ^{
                [exception.reason UTF8String],
                ((NSNumber *)[exception.userInfo valueForKey:@"Error Code"]).unsignedIntegerValue);
     } @finally {
-        // Setup notifications
-        
-        notification_observer audio_session_notification_observer = notification_observation([NSNotificationCenter defaultCenter], [NSOperationQueue mainQueue]);
-        
-        notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
-            UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
-            NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
-            //            static BOOL _isSessionInterrupted;
-            switch (theInterruptionType) {
-                case AVAudioSessionInterruptionTypeBegan: {
-                    //                _isSessionInterrupted = [_engine isRunning];
-                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
-                    break;
+            // Setup notifications
+            
+            notification_observer audio_session_notification_observer = notification_observation([NSNotificationCenter defaultCenter], [NSOperationQueue mainQueue]);
+            
+            notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
+                UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
+                NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
+                //            static BOOL _isSessionInterrupted;
+                switch (theInterruptionType) {
+                    case AVAudioSessionInterruptionTypeBegan: {
+                        //                _isSessionInterrupted = [_engine isRunning];
+                        //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+                        break;
+                    }
+                        
+                    case AVAudioSessionInterruptionTypeEnded: {
+                        //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+                        //                _isSessionInterrupted = FALSE;
+                        break;
+                    }
+                        
+                    default:
+                        break;
                 }
-                    
-                case AVAudioSessionInterruptionTypeEnded: {
-                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
-                    //                _isSessionInterrupted = FALSE;
-                    break;
+            });
+            
+            notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
+                UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
+                AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
+                
+                NSLog(@"Route change:");
+                switch (reasonValue) {
+                    case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+                        NSLog(@"     NewDeviceAvailable");
+                        break;
+                    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+                        NSLog(@"     OldDeviceUnavailable");
+                        break;
+                    case AVAudioSessionRouteChangeReasonCategoryChange:
+                        NSLog(@"     CategoryChange");
+                        NSLog(@"     New Category: %@", [[AVAudioSession sharedInstance] category]);
+                        break;
+                    case AVAudioSessionRouteChangeReasonOverride:
+                        NSLog(@"     Override");
+                        break;
+                    case AVAudioSessionRouteChangeReasonWakeFromSleep:
+                        NSLog(@"     WakeFromSleep");
+                        break;
+                    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+                        NSLog(@"     NoSuitableRouteForCategory");
+                        break;
+                    default:
+                        NSLog(@"     ReasonUnknown");
                 }
-                    
-                default:
-                    break;
-            }
-        });
-        
-        notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
-            UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
-            AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
+                
+                NSLog(@"Previous route:\n");
+                NSLog(@"%@", routeDescription);
+                NSLog(@"Current route:\n");
+                NSLog(@"%@", [[AVAudioSession sharedInstance] currentRoute]);
+                
+            });
             
-            NSLog(@"Route change:");
-            switch (reasonValue) {
-                case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-                    NSLog(@"     NewDeviceAvailable");
-                    break;
-                case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
-                    NSLog(@"     OldDeviceUnavailable");
-                    break;
-                case AVAudioSessionRouteChangeReasonCategoryChange:
-                    NSLog(@"     CategoryChange");
-                    NSLog(@"     New Category: %@", [[AVAudioSession sharedInstance] category]);
-                    break;
-                case AVAudioSessionRouteChangeReasonOverride:
-                    NSLog(@"     Override");
-                    break;
-                case AVAudioSessionRouteChangeReasonWakeFromSleep:
-                    NSLog(@"     WakeFromSleep");
-                    break;
-                case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
-                    NSLog(@"     NoSuitableRouteForCategory");
-                    break;
-                default:
-                    NSLog(@"     ReasonUnknown");
-            }
+            observe_notifications(@[observe_audio_session_interruption_notification, observe_audio_route_change_notification]);
             
-            NSLog(@"Previous route:\n");
-            NSLog(@"%@", routeDescription);
-            NSLog(@"Current route:\n");
-            NSLog(@"%@", [[AVAudioSession sharedInstance] currentRoute]);
-            
-        });
-        
-        observe_notifications(@[observe_audio_session_interruption_notification, observe_audio_route_change_notification]);
-        
-    }
+        }
+    
+    
+    
+    
+    //    static AVAudioSession * session;
+    //    session = [AVAudioSession sharedInstance];
+//    
+//    @try {
+//        __autoreleasing NSError *error = nil;
+//        //        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault routeSharingPolicy:AVAudioSessionRouteSharingPolicyLongFormAudio options:AVAudioSessionCategoryOptionAllowAirPlay | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
+//        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeDefault options:AVAudioSessionCategoryOptionAllowAirPlay | AVAudioSessionCategoryOptionDefaultToSpeaker error:&error];
+//        [[AVAudioSession sharedInstance] setSupportsMultichannelContent:TRUE  error:&error];
+//        [[AVAudioSession sharedInstance] setPreferredInputNumberOfChannels:2  error:&error];
+//        [[AVAudioSession sharedInstance] setPreferredOutputNumberOfChannels:2 error:&error];
+//        [[AVAudioSession sharedInstance] setPrefersNoInterruptionsFromSystemAlerts:TRUE error:&error]; // TO-DO: Make this a user-specified preference
+//        
+//        !(!error) ?: ^ (NSError ** error_t) {
+//            printf("Error configuring audio session:\n\t%s\n", [[*error_t debugDescription] UTF8String]);
+//            NSException* exception = [NSException
+//                                      exceptionWithName:(*error_t).domain
+//                                      reason:(*error_t).localizedDescription
+//                                      userInfo:@{@"Error Code" : @((*error_t).code)}];
+//            @throw exception;
+//        }(&error);
+//    } @catch (NSException *exception) {
+//        printf("Exception configuring audio session:\n\t%s\n\t%s\n\t%lu",
+//               [exception.name UTF8String],
+//               [exception.reason UTF8String],
+//               ((NSNumber *)[exception.userInfo valueForKey:@"Error Code"]).unsignedIntegerValue);
+//    } @finally {
+//        // Setup notifications
+//        
+//        notification_observer audio_session_notification_observer = notification_observation([NSNotificationCenter defaultCenter], [NSOperationQueue mainQueue]);
+//        
+//        notification observe_audio_session_interruption_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
+//            UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
+//            NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
+//            //            static BOOL _isSessionInterrupted;
+//            switch (theInterruptionType) {
+//                case AVAudioSessionInterruptionTypeBegan: {
+//                    //                _isSessionInterrupted = [_engine isRunning];
+//                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+//                    break;
+//                }
+//                    
+//                case AVAudioSessionInterruptionTypeEnded: {
+//                    //                !(_isSessionInterrupted) ?: [self toggleAudioEngineRunningStatus:((ViewController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]).playPauseButton];
+//                    //                _isSessionInterrupted = FALSE;
+//                    break;
+//                }
+//                    
+//                default:
+//                    break;
+//            }
+//        });
+//        
+//        notification observe_audio_route_change_notification = audio_session_notification_observer([NSNotification notificationWithName:(NSNotificationName)AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]], ^(NSNotification * notification) {
+//            UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
+//            AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
+//            
+//            NSLog(@"Route change:");
+//            switch (reasonValue) {
+//                case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+//                    NSLog(@"     NewDeviceAvailable");
+//                    break;
+//                case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+//                    NSLog(@"     OldDeviceUnavailable");
+//                    break;
+//                case AVAudioSessionRouteChangeReasonCategoryChange:
+//                    NSLog(@"     CategoryChange");
+//                    NSLog(@"     New Category: %@", [[AVAudioSession sharedInstance] category]);
+//                    break;
+//                case AVAudioSessionRouteChangeReasonOverride:
+//                    NSLog(@"     Override");
+//                    break;
+//                case AVAudioSessionRouteChangeReasonWakeFromSleep:
+//                    NSLog(@"     WakeFromSleep");
+//                    break;
+//                case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+//                    NSLog(@"     NoSuitableRouteForCategory");
+//                    break;
+//                default:
+//                    NSLog(@"     ReasonUnknown");
+//            }
+//            
+//            NSLog(@"Previous route:\n");
+//            NSLog(@"%@", routeDescription);
+//            NSLog(@"Current route:\n");
+//            NSLog(@"%@", [[AVAudioSession sharedInstance] currentRoute]);
+//            
+//        });
+//        
+//        observe_notifications(@[observe_audio_session_interruption_notification, observe_audio_route_change_notification]);
+//        
+//    }
 };
 
 - (instancetype)init
@@ -336,9 +424,9 @@ NSArray<NSDictionary<NSString *, id> *> *(^tonesDictionary)(void) = ^NSArray<NSD
         
         if (![self->_playerOneNode isPlaying] || ![self->_playerTwoNode isPlaying])
         {
-//            [self->_playerOneNode prepareWithFrameCount:[[self->_mixerNode outputFormatForBus:0] sampleRate] * [[self->_mixerNode outputFormatForBus:0] channelCount]];
+            //            [self->_playerOneNode prepareWithFrameCount:[[self->_mixerNode outputFormatForBus:0] sampleRate] * [[self->_mixerNode outputFormatForBus:0] channelCount]];
             [self->_playerOneNode play];
-//            [self->_playerTwoNode prepareWithFrameCount:[[self->_mixerNode outputFormatForBus:0] sampleRate] * [[self->_mixerNode outputFormatForBus:0] channelCount]];
+            //            [self->_playerTwoNode prepareWithFrameCount:[[self->_mixerNode outputFormatForBus:0] sampleRate] * [[self->_mixerNode outputFormatForBus:0] channelCount]];
             [self->_playerTwoNode play];
             //            NSError *error = nil;
             [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
