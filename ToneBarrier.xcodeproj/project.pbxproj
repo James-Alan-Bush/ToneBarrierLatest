@@ -13,7 +13,6 @@
 		B96C25B42865F1A400A75975 /* easing.c in Sources */ = {isa = PBXBuildFile; fileRef = B96C25B22865F1A400A75975 /* easing.c */; };
 		B9869C5C28672EE8004C4E18 /* ToneBarrierPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5B28672EE8004C4E18 /* ToneBarrierPlayer.m */; };
 		B9869C5F28672FAC004C4E18 /* ToneGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C5D28672FAC004C4E18 /* ToneGenerator.m */; };
-		B9869C62286733DA004C4E18 /* Frequencies.m in Sources */ = {isa = PBXBuildFile; fileRef = B9869C60286733DA004C4E18 /* Frequencies.m */; };
 		B98823DC297626B700477516 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226282973A7DB001B6EF7 /* AVKit.framework */; };
 		B98823E0297626B800477516 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DE297626B800477516 /* AVFoundation.framework */; };
 		B98823E1297626B800477516 /* BackgroundTasks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B98823DF297626B800477516 /* BackgroundTasks.framework */; };
@@ -23,6 +22,7 @@
 		B99077E9285AD0AF004F494E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B99077E7285AD0AF004F494E /* Main.storyboard */; };
 		B99077EE285AD0B0004F494E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B99077EC285AD0B0004F494E /* LaunchScreen.storyboard */; };
 		B99077F1285AD0B0004F494E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B99077F0285AD0B0004F494E /* main.m */; };
+		B997126A2F0601DC00645884 /* Frequencies.m in Sources */ = {isa = PBXBuildFile; fileRef = B99712692F0601DC00645884 /* Frequencies.m */; };
 		B9F7FF692E88A54700D7BD5E /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B93226242973A79A001B6EF7 /* AVFAudio.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +40,6 @@
 		B9869C5B28672EE8004C4E18 /* ToneBarrierPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToneBarrierPlayer.m; sourceTree = "<group>"; };
 		B9869C5D28672FAC004C4E18 /* ToneGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToneGenerator.m; sourceTree = "<group>"; wrapsLines = 0; };
 		B9869C5E28672FAC004C4E18 /* ToneGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneGenerator.h; sourceTree = "<group>"; };
-		B9869C60286733DA004C4E18 /* Frequencies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Frequencies.m; sourceTree = "<group>"; };
 		B9869C61286733DA004C4E18 /* Frequencies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Frequencies.h; sourceTree = "<group>"; };
 		B9869C6428673755004C4E18 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		B9869C6528673755004C4E18 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -57,6 +56,7 @@
 		B99077ED285AD0B0004F494E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B99077EF285AD0B0004F494E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B99077F0285AD0B0004F494E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B99712692F0601DC00645884 /* Frequencies.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Frequencies.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,7 +110,7 @@
 			children = (
 				B93226232973A516001B6EF7 /* ToneBarrier.entitlements */,
 				B9869C61286733DA004C4E18 /* Frequencies.h */,
-				B9869C60286733DA004C4E18 /* Frequencies.m */,
+				B99712692F0601DC00645884 /* Frequencies.m */,
 				B9869C5E28672FAC004C4E18 /* ToneGenerator.h */,
 				B9869C5D28672FAC004C4E18 /* ToneGenerator.m */,
 				B9869C5A28672EE8004C4E18 /* ToneBarrierPlayer.h */,
@@ -205,7 +205,7 @@
 				B99077F1285AD0B0004F494E /* main.m in Sources */,
 				B9869C5C28672EE8004C4E18 /* ToneBarrierPlayer.m in Sources */,
 				B99077E3285AD0AF004F494E /* SceneDelegate.m in Sources */,
-				B9869C62286733DA004C4E18 /* Frequencies.m in Sources */,
+				B997126A2F0601DC00645884 /* Frequencies.m in Sources */,
 				B9869C5F28672FAC004C4E18 /* ToneGenerator.m in Sources */,
 			);
 		};
@@ -356,10 +356,10 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 99;
+				CURRENT_PROJECT_VERSION = 100;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToneBarrier/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ToneBarrierBeta.99;
+				INFOPLIST_KEY_CFBundleDisplayName = ToneBarrierBeta.991;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -372,7 +372,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.99;
+				MARKETING_VERSION = 0.991;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.demonicactivity.bush.alan.james.ToneBarrier;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -391,10 +391,10 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = ToneBarrier/ToneBarrier.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 99;
+				CURRENT_PROJECT_VERSION = 100;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToneBarrier/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ToneBarrierBeta.99;
+				INFOPLIST_KEY_CFBundleDisplayName = ToneBarrierBeta.991;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -407,7 +407,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.99;
+				MARKETING_VERSION = 0.991;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blogspot.demonicactivity.bush.alan.james.ToneBarrier;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
